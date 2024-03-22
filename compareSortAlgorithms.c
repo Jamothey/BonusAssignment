@@ -4,6 +4,13 @@
 
 int extraMemoryAllocated;
 
+void swap(int *a, int *b)
+{
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
 void *Alloc(size_t sz)
 {
 	extraMemoryAllocated += sz;
@@ -30,34 +37,117 @@ size_t Size(void* ptr)
 // extraMemoryAllocated counts bytes of memory allocated
 void heapSort(int arr[], int n)
 {
+	
 }
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void mergeSort(int pData[], int l, int r)
 {
-	
+	if(l < r)
+	{
+		int middle = l + (r - l) / 2;
+		mergeSort(pData, l, middle);
+		mergeSort(pData, middle + 1, r);
+		int arr1 = middle - l + 1;
+		int arr2 = r - middle;
+		int *L = (int *)Alloc(arr1 * sizeof(int));
+		int *R = (int *)Alloc(arr2 * sizeof(int));
+		for(int i = 0; i < arr1; i++)
+		{
+			L[i] = pData[l + i];
+		}
+		for(int i = 0; i < arr2; i++)
+		{
+			R[i] = pData[middle + 1 + i];
+		}
+		int i = 0, j = 0;
+		int k = l;
+		while (i < arr1 && j < arr2)
+		{
+			if(L[i] <= R[j])
+			{
+				pData[k] = L[i];
+				i++;
+			}
+			else
+			{
+				pData[k] = R[j];
+				j++;
+			}
+			k++;
+		}
+		while(i < arr1)
+		{
+			pData[k] = L[i];
+			i++;
+			k++;
+		}
+		while(j < arr2)
+		{
+			pData[k] = R[j];
+			j++;
+			k++;
+		}
+		DeAlloc(L);
+		DeAlloc(R);
+	}
 }
 
 // implement insertion sort
 // extraMemoryAllocated counts bytes of memory allocated
 void insertionSort(int* pData, int n)
 {
-	
+	int i, j, num;
+	for(i = 1; i < n; i++)
+	{
+		num = pData[i];
+		j = i - 1;
+		while(j >= 0 && pData[j] > num)
+		{
+			pData[j + 1] = pData[j];
+			j--;
+		}
+		pData[j + 1] = num;
+	}
 }
 
 // implement bubble sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void bubbleSort(int* pData, int n)
 {
-	
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < n - 1 - i; j++)
+		{
+			if(pData[j] > pData[j + 1])
+			{
+				swap(pData[j], pData[j + 1]);
+			}
+		}
+	}
 }
 
 // implement selection sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void selectionSort(int* pData, int n)
 {
-	
+	for(int i = 0; i < n - 1; i++)
+	{
+		int minIndex = i;
+		int j = 0;
+		for(j = j + i; j < n; j++)
+		{
+			if(pData[j] < pData[minIndex])
+			{
+				minIndex = j;
+			}
+		}
+		if(minIndex != i)
+		{
+			swap(pData[minIndex], pData[i]);
+		}
+	}
 }
 
 // parses input file to an integer array
